@@ -1,4 +1,3 @@
-const { Component } = require("@serverless/core");
 const fse = require("fs-extra");
 const path = require("path");
 const execa = require("execa");
@@ -18,7 +17,7 @@ const emptyDir = fse.emptyDir;
 
 const pathToPosix = path => path.replace(/\\/g, "/");
 
-class NextjsComponent extends Component {
+class NextjsComponent {
   async default(inputs = {}) {
 
     if (inputs.build !== false) {
