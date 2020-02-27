@@ -313,22 +313,47 @@ class NextjsComponent {
       join(nextConfigPath, STATIC_JS_CODE_DIR)
     ) 
     
-    process.chdir('.serverless_nextjs/api')
+    process.chdir('.serverless_nextjs/api/default-lambda/')
 
     var file_system = require('fs');
     var archiver = require('archiver');
 
-    var output = file_system.createWriteStream('default_lambda.zip');
+      var output = file_system.createWriteStream('../default_lambda.zip');
     var archive = archiver('zip');
 
     output.on('close', function () {
-        console.log('creating ./serverless_nextjs/api/default_lambda.zip for artifacts');
+        console.log('creating .serverless_nextjs/api/default_lambda.zip for artifacts');
     });
 
 
     archive.pipe(output);
 
-    archive.glob("default-lambda/**/*");
+      archive.glob("**/*");
+
+    archive.on('error', function(err){
+        throw err;
+    });
+
+    archive.finalize();
+    
+      process.chdir('../../../')
+
+    process.chdir('.serverless_nextjs/api/api-lambda/')
+console.log(process.cwd())
+    var file_system = require('fs');
+    var archiver = require('archiver');
+
+      var output = file_system.createWriteStream('../api_lambda.zip');
+    var archive = archiver('zip');
+
+    output.on('close', function () {
+        console.log('creating .serverless_nextjs/api/api_lambda.zip for artifacts');
+    });
+
+
+    archive.pipe(output);
+
+      archive.glob("**/*");
 
     archive.on('error', function(err){
         throw err;
@@ -337,31 +362,9 @@ class NextjsComponent {
     archive.finalize();
 
 
-    var file_system = require('fs');
-    var archiver = require('archiver');
+      //      process.chdir('../../../')
 
-    var output = file_system.createWriteStream('api_lambda.zip');
-    var archive = archiver('zip');
-
-    output.on('close', function () {
-        console.log('creating ./serverless_nextjs/api/api_lambda.zip for artifacts');
-    });
-
-
-    archive.pipe(output);
-
-    archive.glob("api-lambda/**/*");
-
-    archive.on('error', function(err){
-        throw err;
-    });
-
-    archive.finalize();
-
-
-
-
-    // const [publicDirExists, staticDirExists] = await Promise.all([
+      // const [publicDirExists, staticDirExists] = await Promise.all([
     //   fse.exists(join(staticPath, "public")),
     //   fse.exists(join(staticPath, "static"))
     // ]);
