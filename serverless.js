@@ -6,7 +6,7 @@ const isDynamicRoute = require("./lib/isDynamicRoute");
 const obtainDomains = require("./lib/obtainDomains");
 const expressifyDynamicRoute = require("./lib/expressifyDynamicRoute");
 const pathToRegexStr = require("./lib/pathToRegexStr");
-const { DEFAULT_LAMBDA_CODE_DIR, API_LAMBDA_CODE_DIR, STATIC_JS_CODE_DIR, STATIC_PAGES_CODE_DIR } = require("./constants");
+const { BUILD_DIR, DEFAULT_LAMBDA_CODE_DIR, API_LAMBDA_CODE_DIR, STATIC_JS_CODE_DIR, STATIC_PAGES_CODE_DIR } = require("./constants");
 const getSortedRoutes = require("./lib/sortedRoutes");
 const getAllFiles = require("./lib/getAllFiles");
 
@@ -82,14 +82,14 @@ class NextjsComponent {
 
   readDefaultBuildManifest(nextConfigPath) {
     return fse.readJSON(
-      join(nextConfigPath, ".serverless_nextjs/default-lambda/manifest.json")
+      join(nextConfigPath, `${DEFAULT_LAMBDA_CODE_DIR}/manifest.json`)
     );
   }
 
   async readApiBuildManifest(nextConfigPath) {
     const path = join(
       nextConfigPath,
-      ".serverless_nextjs/api-lambda/manifest.json"
+      `${API_LAMBDA_CODE_DIR}/manifest.json`
     );
     return (await fse.exists(path))
       ? fse.readJSON(path)
@@ -98,6 +98,8 @@ class NextjsComponent {
 
   async emptyBuildDirectory(nextConfigPath) {
     return Promise.all([
+      emptyDir(join(nextConfigPath, BUILD_DIR, "api")),
+      emptyDir(join(nextConfigPath, BUILD_DIR, "s3")),
       emptyDir(join(nextConfigPath, DEFAULT_LAMBDA_CODE_DIR)),
       emptyDir(join(nextConfigPath, API_LAMBDA_CODE_DIR)),
       emptyDir(join(nextConfigPath, STATIC_JS_CODE_DIR)),
